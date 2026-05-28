@@ -166,11 +166,6 @@ Toda la documentación está disponible en **español** (`.es.md`) e **inglés**
 
 ---
 
-## Conectar JIRA (cuando el instructor lo indique)
-
-Cuando conectes el MCP de Atlassian, usa el prompt en `prompts/jira-setup.md` para crear automáticamente el tablero Scrum con todas las tareas del curso.
-
----
 
 **Project Stack:** k6 · JavaScript ES Modules · Node 18+
 **Base URL default:** `http://localhost:3001` (override con `--env BASE_URL=<url>`)
