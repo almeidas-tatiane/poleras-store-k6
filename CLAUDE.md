@@ -166,6 +166,3 @@ Toda la documentación está disponible en **español** (`.es.md`) e **inglés**
 
 ---
 
-
-**Project Stack:** k6 · JavaScript ES Modules · Node 18+
-**Base URL default:** `http://localhost:3001` (override con `--env BASE_URL=<url>`)
