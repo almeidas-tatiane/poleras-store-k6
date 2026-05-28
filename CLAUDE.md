@@ -136,14 +136,16 @@ K6_WEB_DASHBOARD=true k6 run tests/auth/auth.test.js
 
 ## Documentación del Proyecto
 
-| Documento | Contenido |
-|---|---|
-| `docs/architecture.html` | Diagrama interactivo de los 5 microservicios |
-| `docs/sequence.html` | Flujo de compra completo (secuencia de llamadas) |
-| `docs/pattern-5-blocks.md` | Detalle del patrón obligatorio para scripts k6 |
-| `docs/bimodal-reporting.md` | Cómo generar reportes técnicos y ejecutivos |
-| `docs/protocols.md` | Comandos k6, errores comunes, convenciones |
-| `prompts/jira-setup.md` | Prompt para poblar JIRA cuando conectes el MCP |
+Toda la documentación está disponible en **español** (`.es.md`) e **inglés** (`.en.md`):
+
+| Documento ES | Documento EN | Contenido |
+|---|---|---|
+| `docs/architecture.html` | `docs/architecture.en.html` | Diagrama interactivo de los 5 microservicios |
+| `docs/sequence.html` | `docs/sequence.en.html` | Flujo de compra completo (secuencia de llamadas) |
+| `docs/pattern-5-blocks.es.md` | `docs/pattern-5-blocks.en.md` | Patrón obligatorio para scripts k6 |
+| `docs/bimodal-reporting.es.md` | `docs/bimodal-reporting.en.md` | Reportes técnicos y ejecutivos |
+| `docs/protocols.es.md` | `docs/protocols.en.md` | Comandos k6, errores comunes, convenciones |
+| `prompts/jira-setup.es.md` | `prompts/jira-setup.en.md` | Prompt para poblar JIRA con el MCP |
 
 ---
 
