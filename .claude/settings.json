@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(k6 run:*)",
+      "Bash(k6 version:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": []
+  }
+}

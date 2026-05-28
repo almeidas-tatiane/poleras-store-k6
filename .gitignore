@@ -1,0 +1,27 @@
+# Environment & credentials
+.env
+.env.local
+.env.*.local
+
+# k6 raw output (too large for git — only HTML + .md are versioned)
+results/**/*.json
+results/**/*.csv
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
