@@ -98,9 +98,9 @@ Por favor crea lo siguiente siguiendo buenas prácticas de Scrum:
   - Criterios de aceptación: reporte técnico con bottlenecks y recomendaciones, reporte ejecutivo con riesgo/impacto para stakeholders, veredicto documentado.
   - Story Points: 8
 
-**4. Tarea de SLAs dentro de HU-1** (crear primero — es la fuente de verdad)
+**4. Tarea de SLAs** (crear primero — es la fuente de verdad de todo el proyecto)
 
-Crea esta tarea como hija de HU-1 **antes que cualquier otra tarea de script o ejecución**:
+Crea esta tarea como hija de la Historia de Análisis de Requisitos **antes que cualquier otra tarea de script, ejecución o análisis**:
 
 - `[SLA] Definir SLAs y SLOs por microservicio`: Documentar los thresholds de performance aceptados para cada servicio. Estos valores son la fuente de verdad para todos los scripts k6, tickets de ejecución y tickets de análisis.
   - Descripción debe incluir la tabla de SLAs:
@@ -114,13 +114,13 @@ Crea esta tarea como hija de HU-1 **antes que cualquier otra tarea de script o e
     | e2e (flujo completo) | login→cart→order→payment | < 1000ms | < 1% |
   - Criterios de aceptación: tabla aprobada por el equipo, valores alineados con arquitectura del sistema.
 
-**5. Tareas detalladas dentro de HU-3** (una por servicio + e2e)
+**5. Tareas de scripts** (una por servicio + e2e, hijas de la Historia de Diseño de Scripts)
 
-Crea las siguientes tareas como hijas de HU-3. **Regla de trazabilidad:** la descripción de cada tarea debe comenzar con un bloque de referencia al ticket de SLAs (creado en el punto 4) indicando los thresholds que aplican para ese servicio. Además, cada tarea debe tener un issue link formal tipo **"Relates"** hacia el ticket de SLAs.
+**Regla de trazabilidad:** la descripción de cada tarea debe comenzar con un bloque que referencie el ticket de SLAs recién creado, indicando los thresholds que aplican para ese servicio. Además, cada tarea debe tener un issue link formal tipo **"Relates"** hacia el ticket de SLAs.
 
 Formato del bloque de referencia al inicio de cada descripción:
 ```
-ℹ️ REFERENCIA TÉCNICA — Lee el ticket de SLAs (HU-1)
+ℹ️ REFERENCIA TÉCNICA — Lee el ticket de definición de SLAs
 Los thresholds para este servicio están definidos y aprobados en ese ticket: [indicar P95 y error rate del servicio].
 Los valores deben usarse exactamente en el bloque de `thresholds` del script k6.
 ```
@@ -132,13 +132,13 @@ Los valores deben usarse exactamente en el bloque de `thresholds` del script k6.
 - `[Script] payments-service — payments.test.js`: Script k6 para `POST /api/payments/process`. SLA: P95 < 300ms, error rate < 0.1%. Servicio crítico — requiere JWT y orden válida. Issue link "Relates" → ticket de SLAs.
 - `[Script] e2e — e2e.test.js`: Script k6 para el flujo completo (login → browse → cart → order → payment). SLA: P95 < 1000ms total, error rate < 1%. Issue link "Relates" → ticket de SLAs.
 
-**6. Tareas detalladas dentro de HU-4** (ejecución por tipo de prueba)
+**6. Tareas de ejecución** (una por tipo de prueba, hijas de la Historia de Ejecución)
 
-Crea las siguientes tareas como hijas de HU-4. Cada tarea debe tener issue links **"Relates"** hacia el ticket de SLAs (HU-1) y hacia el script correspondiente (HU-3), y su descripción debe iniciar con el bloque de referencia:
+Cada tarea debe tener issue links **"Relates"** hacia el ticket de SLAs y hacia el ticket de script correspondiente, y su descripción debe iniciar con:
 ```
 ℹ️ REFERENCIA TÉCNICA
-- SLAs de referencia: ver ticket de SLAs (HU-1)
-- Script a ejecutar: ver ticket del script correspondiente (HU-3)
+- SLAs de referencia: ver ticket de definición de SLAs
+- Script a ejecutar: ver ticket del script correspondiente
 Los thresholds que debe cumplir esta ejecución están definidos en el ticket de SLAs.
 ```
 
@@ -148,13 +148,13 @@ Los thresholds que debe cumplir esta ejecución están definidos en el ticket de
 - `[Ejecución] Spike Test — simular pico Black Friday`: 2500 VUs en 2 minutos. Evaluar comportamiento bajo pico extremo.
 - `[Ejecución] Soak Test — validar estabilidad prolongada`: 50 VUs × 2 horas. Detectar memory leaks o degradación progresiva.
 
-**7. Tareas detalladas dentro de HU-5** (análisis por tipo de prueba)
+**7. Tareas de análisis** (una por tipo de prueba, hijas de la Historia de Análisis y Reporte)
 
-Crea las siguientes tareas como hijas de HU-5. Cada tarea debe tener issue links **"Relates"** hacia el ticket de SLAs (HU-1) y hacia la tarea de ejecución correspondiente (HU-4), y su descripción debe iniciar con:
+Cada tarea debe tener issue links **"Relates"** hacia el ticket de SLAs y hacia la tarea de ejecución correspondiente, y su descripción debe iniciar con:
 ```
 ℹ️ REFERENCIA TÉCNICA
-- SLAs de referencia: ver ticket de SLAs (HU-1)
-- Resultados a analizar: ver ticket de ejecución correspondiente (HU-4)
+- SLAs de referencia: ver ticket de definición de SLAs
+- Resultados a analizar: ver ticket de ejecución correspondiente
 El análisis debe contrastar los resultados obtenidos contra los thresholds definidos en el ticket de SLAs.
 ```
 
@@ -166,13 +166,13 @@ El análisis debe contrastar los resultados obtenidos contra los thresholds defi
 
 **8. Organización en Sprints** (3 sprints de 2 semanas)
 
-- **Sprint 1 — Análisis y Planificación** (2 semanas): HU-1, HU-2
+- **Sprint 1 — Análisis y Planificación** (2 semanas): Historias de Análisis de Requisitos y Planificación
   - Sprint Goal: "Tener mapeados flujos críticos, SLAs definidos y estrategia de carga aprobada para los 5 microservicios de Poleras Store"
 
-- **Sprint 2 — Desarrollo y Configuración** (2 semanas): HU-3, HU-4 (parcial — scripts + smoke tests)
+- **Sprint 2 — Desarrollo y Configuración** (2 semanas): Historia de Diseño de Scripts + inicio de Ejecución (Smoke Test)
   - Sprint Goal: "Desarrollar los 6 scripts k6 con patrón de 5 bloques y validar entorno mediante Smoke Tests sin errores"
 
-- **Sprint 3 — Ejecución, Análisis y Reporte** (2 semanas): HU-4 (ejecución Load/Stress/Spike/Soak), HU-5
+- **Sprint 3 — Ejecución, Análisis y Reporte** (2 semanas): Ejecuciones Load/Stress/Spike/Soak + Historia de Análisis
   - Sprint Goal: "Ejecutar ciclo completo de pruebas, identificar punto de quiebre y emitir veredicto go/no-go para Black Friday"
 
 **9. Versiones del proyecto** (Releases)
@@ -183,7 +183,7 @@ El análisis debe contrastar los resultados obtenidos contra los thresholds defi
 
 Por favor crea todo esto en JIRA usando el MCP de Atlassian. Sigue las buenas prácticas de Scrum: jerarquía Epic → Story → Task, Story Points en escala Fibonacci, Sprint Goals documentados.
 
-**Orden de creación recomendado:** Proyecto → Épica → HU-1 → tarea de SLAs → resto de HUs → tareas de HU-3 (con links a SLAs) → tareas de HU-4 (con links a SLAs y scripts) → tareas de HU-5 (con links a SLAs y ejecuciones) → Sprints → Versiones.
+**Orden de creación recomendado:** Proyecto → Épica → Historias → tarea de SLAs (primero) → tareas de scripts (con links a SLAs) → tareas de ejecución (con links a SLAs y scripts) → tareas de análisis (con links a SLAs y ejecuciones) → Sprints → Versiones.
 
 ---FIN---
 

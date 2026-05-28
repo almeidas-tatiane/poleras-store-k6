@@ -98,9 +98,9 @@ Please create the following following Scrum best practices:
   - Acceptance criteria: technical report with bottlenecks and recommendations, executive report with risk/impact for stakeholders, documented verdict.
   - Story Points: 8
 
-**4. SLA task inside US-1** (create first — this is the source of truth)
+**4. SLA task** (create first — this is the source of truth for the entire project)
 
-Create this task as a child of US-1 **before any script, execution, or analysis task**:
+Create this task as a child of the Requirements Analysis Story **before any script, execution, or analysis task**:
 
 - `[SLA] Define SLAs and SLOs per microservice`: Document the accepted performance thresholds for each service. These values are the source of truth for all k6 scripts, execution tickets, and analysis tickets.
   - Description must include the SLA table:
@@ -114,13 +114,13 @@ Create this task as a child of US-1 **before any script, execution, or analysis 
     | e2e (full flow) | login→cart→order→payment | < 1000ms | < 1% |
   - Acceptance criteria: table approved by the team, values aligned with system architecture.
 
-**5. Detailed tasks inside US-3** (one per service + e2e)
+**5. Script tasks** (one per service + e2e, children of the Script Design Story)
 
-Create the following tasks as children of US-3. **Traceability rule:** each task description must begin with a reference block pointing to the SLA task (created in point 4) indicating the thresholds that apply for that service. Each task must also have a formal **"Relates"** issue link to the SLA task.
+**Traceability rule:** each task description must begin with a reference block pointing to the SLA task just created, indicating the thresholds that apply for that service. Each task must also have a formal **"Relates"** issue link to the SLA task.
 
 Reference block format at the top of each description:
 ```
-ℹ️ TECHNICAL REFERENCE — Read the SLA ticket (US-1)
+ℹ️ TECHNICAL REFERENCE — Read the SLA definition ticket
 The thresholds for this service are defined and approved in that ticket: [indicate P95 and error rate for the service].
 These values must be used exactly in the k6 script's `thresholds` block.
 ```
@@ -132,13 +132,13 @@ These values must be used exactly in the k6 script's `thresholds` block.
 - `[Script] payments-service — payments.test.js`: k6 script for `POST /api/payments/process`. SLA: P95 < 300ms, error rate < 0.1%. Critical service — requires JWT and valid order. Issue link "Relates" → SLA task.
 - `[Script] e2e — e2e.test.js`: k6 script for the full purchase flow (login → browse → cart → order → payment). SLA: P95 < 1000ms total, error rate < 1%. Issue link "Relates" → SLA task.
 
-**6. Detailed tasks inside US-4** (execution per test type)
+**6. Execution tasks** (one per test type, children of the Execution Story)
 
-Create the following tasks as children of US-4. Each task must have **"Relates"** issue links to the SLA task (US-1) and to the relevant script task (US-3), and its description must begin with:
+Each task must have **"Relates"** issue links to the SLA task and to the relevant script task, and its description must begin with:
 ```
 ℹ️ TECHNICAL REFERENCE
-- SLA reference: see SLA task (US-1)
-- Script to execute: see corresponding script task (US-3)
+- SLA reference: see SLA definition ticket
+- Script to execute: see corresponding script task
 The thresholds this execution must meet are defined in the SLA task.
 ```
 
@@ -148,13 +148,13 @@ The thresholds this execution must meet are defined in the SLA task.
 - `[Execution] Spike Test — simulate Black Friday peak`: 2,500 VUs in 2 minutes. Evaluate behavior under extreme peak.
 - `[Execution] Soak Test — validate long-term stability`: 50 VUs × 2 hours. Detect memory leaks or progressive degradation.
 
-**7. Detailed tasks inside US-5** (analysis per test type)
+**7. Analysis tasks** (one per test type, children of the Analysis and Reporting Story)
 
-Create the following tasks as children of US-5. Each task must have **"Relates"** issue links to the SLA task (US-1) and to the corresponding execution task (US-4), and its description must begin with:
+Each task must have **"Relates"** issue links to the SLA task and to the corresponding execution task, and its description must begin with:
 ```
 ℹ️ TECHNICAL REFERENCE
-- SLA reference: see SLA task (US-1)
-- Results to analyze: see corresponding execution task (US-4)
+- SLA reference: see SLA definition ticket
+- Results to analyze: see corresponding execution task
 The analysis must compare the obtained results against the thresholds defined in the SLA task.
 ```
 
@@ -166,13 +166,13 @@ The analysis must compare the obtained results against the thresholds defined in
 
 **8. Sprint Organization** (3 two-week sprints)
 
-- **Sprint 1 — Analysis and Planning** (2 weeks): US-1, US-2
+- **Sprint 1 — Analysis and Planning** (2 weeks): Requirements Analysis and Planning Stories
   - Sprint Goal: "Map all critical flows, define SLAs, and get the load strategy approved for all 5 Poleras Store microservices"
 
-- **Sprint 2 — Development and Setup** (2 weeks): US-3, US-4 (partial — scripts + Smoke Test)
+- **Sprint 2 — Development and Setup** (2 weeks): Script Design Story + start of Execution (Smoke Test)
   - Sprint Goal: "Develop all 6 k6 scripts using the 5-block pattern and validate the environment through error-free Smoke Tests"
 
-- **Sprint 3 — Execution, Analysis and Reporting** (2 weeks): US-4 (Load/Stress/Spike/Soak runs), US-5
+- **Sprint 3 — Execution, Analysis and Reporting** (2 weeks): Load/Stress/Spike/Soak executions + Analysis Story
   - Sprint Goal: "Execute the full test cycle, identify the system's breaking point, and issue the go/no-go verdict for Black Friday"
 
 **9. Project Versions** (Releases)
@@ -183,7 +183,7 @@ The analysis must compare the obtained results against the thresholds defined in
 
 Please create everything in JIRA using the Atlassian MCP. Follow Scrum best practices: Epic → Story → Task hierarchy, Story Points in Fibonacci scale, documented Sprint Goals.
 
-**Recommended creation order:** Project → Epic → US-1 → SLA task → remaining USs → US-3 tasks (with links to SLA) → US-4 tasks (with links to SLA + scripts) → US-5 tasks (with links to SLA + executions) → Sprints → Versions.
+**Recommended creation order:** Project → Epic → Stories → SLA task (first) → script tasks (with links to SLA) → execution tasks (with links to SLA + scripts) → analysis tasks (with links to SLA + executions) → Sprints → Versions.
 
 ---END---
 
