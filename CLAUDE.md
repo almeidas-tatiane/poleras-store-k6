@@ -7,7 +7,6 @@ Guía de operación para el agente Claude Code en este proyecto de curso.
 ## Contexto del Proyecto
 
 **Aplicación bajo prueba:** Poleras Store — e-commerce de poleras (camisetas)
-**Objetivo del curso:** Preparar la plataforma para Black Friday mediante un plan de pruebas de performance por fases.
 **Stack del sistema:** Node.js + Express + PostgreSQL · 5 microservicios independientes
 
 ### Microservicios y puertos
@@ -127,10 +126,27 @@ K6_WEB_DASHBOARD=true k6 run tests/auth/auth.test.js
 
 ## Reglas Críticas
 
+### Ejecución de pruebas
 1. **Si error rate > 50% en los primeros 90s → PARAR.** No re-ejecutar sin diagnosticar primero.
 2. **Antes de ejecutar:** verificar que el servicio responde → `curl http://localhost:3001/health`
 3. **Los SLAs vienen del ticket JIRA** — no se inventan en el script.
 4. **Resultado siempre en `results/`** — el script genera HTML automáticamente (Block 5).
+5. **Exit code 99 = datos válidos.** Threshold fallido no significa test roto — analizar el HTML.
+
+### Post-Compactación (contexto resumido)
+> Aplica cuando ves el mensaje `✻ Conversation compacted` en el chat.
+
+- ❌ **NO** activar skills automáticamente — el contexto resumido puede producir análisis incorrectos.
+- ✅ **SÍ** invocarlos explícitamente cuando los necesites: `/k6-best-practices`, `/performance-testing-strategy`, `/performance-report-analysis`.
+- ✅ **SÍ** re-leer los tickets JIRA via MCP antes de continuar (datos frescos, no memoria).
+- ✅ **SÍ** verificar el estado real de los archivos con Read antes de asumir qué existe.
+
+### Al leer tickets JIRA
+- Extraer SLAs explícitos (P95, error rate, VUs) antes de crear cualquier script.
+- Si el ticket no tiene SLAs definidos → preguntar al instructor antes de continuar.
+- Nunca asumir thresholds — siempre desde el ticket.
+
+<!-- REGLAS ADICIONALES — agregar aquí según avance el curso -->
 
 ---
 
