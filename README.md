@@ -52,32 +52,53 @@ El veredicto final responde a una pregunta concreta: **¿puede Poleras Store sob
 
 ## Requisitos Previos
 
-- [k6](https://k6.io/docs/get-started/installation/) instalado
-- [Claude Code](https://claude.ai/code) con el proyecto abierto
-- Docker corriendo con los servicios de Poleras Store activos
-- (Opcional) MCP de Atlassian configurado para integración con JIRA
+- [k6 v1.0.0+](https://k6.io/docs/get-started/installation/) instalado
+- [Claude Code](https://claude.ai/code) instalado
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) corriendo
+- Stack de Poleras Store (lo entrega el instructor)
+- (Opcional) Cuenta en JIRA Cloud para integración con MCP
 
 ---
 
 ## Inicio Rápido
 
-**1. Verificar que los servicios están activos:**
+**1. Clonar este repositorio:**
+```bash
+git clone <URL-del-instructor>
+cd poleras-store-k6-course
+```
+
+**2. Levantar los servicios de Poleras Store:**
+```bash
+# En el directorio del stack de Poleras Store (entregado por el instructor)
+docker compose up -d
+```
+
+**3. Verificar que los 5 servicios responden:**
 ```bash
 curl http://localhost:3001/health
 curl http://localhost:3002/health
+curl http://localhost:3003/health
+curl http://localhost:3004/health
+curl http://localhost:3005/health
 ```
 
-**2. Abrir el proyecto en Claude Code y dejar que guíe el flujo:**
+**4. Abrir el proyecto en Claude Code:**
 ```bash
 claude .
 ```
 
-**3. Cuando el instructor lo indique, conectar JIRA y crear el tablero:**
+**5. Cuando el instructor lo indique, conectar JIRA y crear el tablero:**
 ```
 Ver: prompts/jira-setup.es.md
 ```
 
-**4. Tu primer Smoke Test (una vez que tengas el script):**
+---
+
+## Tu Primer Test
+
+Una vez completadas las fases 1–3 del curso (análisis, planificación y scripts), Claude Code habrá generado los scripts. Ejecuta tu primer Smoke Test así:
+
 ```bash
 k6 run --vus 2 --duration 30s tests/auth/auth.test.js
 ```
