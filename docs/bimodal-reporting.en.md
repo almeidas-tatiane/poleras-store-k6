@@ -16,7 +16,7 @@ results/YYYY-MM-DD_<type>_<service>/
 ## Report template `.md`
 
 ```markdown
-# Report — PERF-XX · Type: Smoke / Load / Stress
+# Report — <KEY-XX> · Type: Smoke / Load / Stress
 
 ## EXECUTIVE SECTION (for Stakeholders / Business)
 

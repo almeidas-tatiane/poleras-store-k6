@@ -85,7 +85,7 @@ Por favor crea lo siguiente siguiendo buenas prácticas de Scrum:
 
 - **HU-3:** `[FASE 3] Diseño y Desarrollo de Scripts k6`
   - Como equipo de QA, necesito desarrollar 6 scripts k6 (uno por servicio + e2e) siguiendo el patrón de 5 bloques para poder ejecutar las pruebas.
-  - Criterios de aceptación: 6 scripts creados (auth, products, cart, orders, payments, e2e), Smoke Test pasado en todos, thresholds alineados con HU-1.
+  - Criterios de aceptación: 6 scripts creados (auth, products, cart, orders, payments, e2e), Smoke Test pasado en todos, thresholds alineados con el ticket de definición de SLAs.
   - Story Points: 21
 
 - **HU-4:** `[FASE 4 & 5] Configuración del Entorno y Ejecución de Pruebas`
@@ -195,7 +195,7 @@ Al ejecutar el prompt, Claude creará automáticamente:
 
 - 1 proyecto Scrum (`Poleras Store - Performance Testing`)
 - 1 épica (`Black Friday Ready`)
-- 5 historias de usuario (HU-1 a HU-5) con Story Points y criterios de aceptación
+- 5 historias de usuario con Story Points y criterios de aceptación
 - 1 tarea de SLAs (fuente de verdad para todos los thresholds)
 - 6 tareas de scripts k6 con referencia y link al ticket de SLAs
 - 5 tareas de ejecución con referencia y link al ticket de SLAs + scripts

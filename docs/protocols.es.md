@@ -79,7 +79,7 @@ results/
 results/2026-06-01_smoke_auth/
   auth-report.html
   auth-dashboard.html
-  report-PERF-19-2026-06-01.md
+  report-<KEY>-19-2026-06-01.md
 ```
 
 ---

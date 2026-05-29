@@ -16,7 +16,7 @@ results/YYYY-MM-DD_<tipo>_<servicio>/
 ## Template del reporte `.md`
 
 ```markdown
-# Reporte — PERF-XX · Tipo: Smoke / Load / Stress
+# Reporte — <KEY-XX> · Tipo: Smoke / Load / Stress
 
 ## SECCIÓN EJECUTIVA (para Stakeholders / Negocio)
 

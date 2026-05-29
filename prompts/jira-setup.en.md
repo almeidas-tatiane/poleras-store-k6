@@ -60,7 +60,7 @@ User → users-api (login / JWT)
 
 ### What I need created in JIRA
 
-Please create the following following Scrum best practices:
+Please create the following, following Scrum best practices:
 
 **1. Scrum Project**
 - Name: `Poleras Store - Performance Testing`
@@ -85,7 +85,7 @@ Please create the following following Scrum best practices:
 
 - **US-3:** `[PHASE 3] k6 Script Design and Development`
   - As a QA team, I need to develop 6 k6 scripts (one per service + e2e) following the 5-block pattern so tests can be executed.
-  - Acceptance criteria: 6 scripts created (auth, products, cart, orders, payments, e2e), Smoke Test passed on all, thresholds aligned with US-1.
+  - Acceptance criteria: 6 scripts created (auth, products, cart, orders, payments, e2e), Smoke Test passed on all, thresholds aligned with the SLA definition ticket.
   - Story Points: 21
 
 - **US-4:** `[PHASE 4 & 5] Environment Setup and Test Execution`
@@ -195,7 +195,7 @@ After running the prompt, Claude will automatically create:
 
 - 1 Scrum project (`Poleras Store - Performance Testing`)
 - 1 epic (`Black Friday Ready`)
-- 5 user stories (US-1 to US-5) with Story Points and acceptance criteria
+- 5 user stories with Story Points and acceptance criteria
 - 1 SLA task (source of truth for all thresholds)
 - 6 k6 script tasks with reference and link to the SLA task
 - 5 execution tasks with reference and link to the SLA task + scripts

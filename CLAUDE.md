@@ -20,7 +20,7 @@ Guía de operación para el agente Claude Code en este proyecto de curso.
 | orders-service | `:3004` | Pedidos, estado, historial |
 | payments-service | `:3005` | Pagos, transacciones |
 
-**Diagramas de arquitectura:** `docs/architecture.html` y `docs/sequence.html`
+**Diagramas de arquitectura:** `docs/architecture.html` / `docs/architecture.en.html` · `docs/sequence.html` / `docs/sequence.en.html`
 
 ---
 
@@ -43,9 +43,11 @@ Los skills se activan **automáticamente** durante el flujo normal. Si el contex
 
 | Skill | Cuándo se activa | Qué hace |
 |---|---|---|
-| `/performance-testing-strategy` | Después de leer los tickets JIRA | Diseña la estrategia de pruebas |
+| `/performance-testing-strategy` | Después de leer los tickets JIRA¹ | Diseña la estrategia de pruebas |
 | `/k6-best-practices` | Después de crear un script | Valida estructura y buenas prácticas |
 | `/performance-report-analysis` | Después de ejecutar k6 | Analiza resultados y genera reporte |
+
+> ¹ Requiere MCP de Atlassian conectado y tablero JIRA creado. Ver `prompts/jira-setup.es.md` antes de iniciar la Fase 1.
 
 ---
 
@@ -54,6 +56,11 @@ Los skills se activan **automáticamente** durante el flujo normal. Si el contex
 Cada script k6 que crees **debe** seguir esta estructura:
 
 ```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+import { SharedArray } from 'k6/data';
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+
 // Block 1 — Options: thresholds y escenario (VUs, duración, ramp-up)
 export const options = {
   thresholds: {
