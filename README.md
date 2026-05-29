@@ -1,5 +1,7 @@
 # Poleras Store — Performance Testing Course
 
+> **[ ES ]** Español (este archivo) &nbsp;|&nbsp; **[ EN ]** [English](./README.en.md)
+
 Proyecto base del curso de **Performance Testing** con k6.
 
 ---
