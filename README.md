@@ -33,7 +33,7 @@ Para ver los diagramas de arquitectura abre en tu navegador:
 
 ---
 
-## Tu Misión
+## Ciclo Pruebas
 
 Ejecutar un ciclo completo de pruebas de performance en 6 fases:
 
@@ -83,12 +83,8 @@ curl http://localhost:3004/health
 curl http://localhost:3005/health
 ```
 
-**4. Abrir el proyecto en Claude Code:**
-```bash
-claude .
-```
 
-**5. Cuando el instructor lo indique, conectar JIRA y crear el tablero:**
+**4. Cuando el instructor lo indique, conectar JIRA y crear el tablero:**
 ```
 Ver: prompts/jira-setup.es.md
 ```
@@ -115,6 +111,7 @@ k6 run --vus 2 --duration 30s tests/auth/auth.test.js
 | `docs/protocols.es.md` | Comandos k6, exit codes y convenciones |
 | `docs/bimodal-reporting.es.md` | Cómo generar reportes técnicos y ejecutivos |
 | `prompts/jira-setup.es.md` | Prompt para crear el tablero JIRA del curso |
+
 
 > Toda la documentación está disponible en español (`.es.md`) e inglés (`.en.md`).
 
