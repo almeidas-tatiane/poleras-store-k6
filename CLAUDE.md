@@ -1,4 +1,8 @@
-# CLAUDE.md — Poleras Store · Performance Testing Course
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+<!-- CLAUDE.md — Poleras Store · Performance Testing Course -->
 
 Guía de operación para el agente Claude Code en este proyecto de curso.
 
@@ -8,7 +12,8 @@ Guía de operación para el agente Claude Code en este proyecto de curso.
 
 **Aplicación bajo prueba:** Poleras Store — e-commerce de poleras (camisetas)
 **Descripción:** Poleras Store es una tienda online que vende poleras de calidad, cómodas y a bajo precio. Todos los servicios están montados en local para que el equipo de Performance Testing inicie sus actividades. El equipo de ingeniería necesita una evaluación para saber si la plataforma podrá resistir el próximo evento de Black Friday.
-**Stack del sistema:** Node.js + Express + PostgreSQL · 5 microservicios independientes
+**Stack del sistema:** Node.js + Express + PostgreSQL · 5 microservicios independientes  
+**Observabilidad:** Prometheus · Loki · Tempo · Grafana (disponible durante ejecución de pruebas)
 
 ### Microservicios y puertos
 
@@ -128,6 +133,12 @@ k6 run --env BASE_URL=http://localhost:3002 tests/products/products.test.js
 
 # Con dashboard web en tiempo real
 K6_WEB_DASHBOARD=true k6 run tests/auth/auth.test.js
+
+# Dashboard + exportar HTML al terminar
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=results/dashboard.html k6 run tests/auth/auth.test.js
+
+# Salida JSON para análisis posterior
+k6 run --out json=results/raw.json tests/auth/auth.test.js
 ```
 
 ---
@@ -137,9 +148,18 @@ K6_WEB_DASHBOARD=true k6 run tests/auth/auth.test.js
 ### Ejecución de pruebas
 1. **Si error rate > 50% en los primeros 90s → PARAR.** No re-ejecutar sin diagnosticar primero.
 2. **Antes de ejecutar:** verificar que el servicio responde → `curl http://localhost:3001/health`
+   - Si el servicio no responde → revisar Docker: `docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"`
 3. **Los SLAs vienen del ticket JIRA** — no se inventan en el script.
 4. **Resultado siempre en `results/`** — el script genera HTML automáticamente (Block 5).
-5. **Exit code 99 = datos válidos.** Threshold fallido no significa test roto — analizar el HTML.
+   - Convención de carpeta: `results/YYYY-MM-DD_<tipo-prueba>_<servicio>/` (ej: `2026-06-01_smoke_auth/`)
+5. **Exit codes de k6:**
+
+| Código | Significado | Qué hacer |
+|---|---|---|
+| `0` | Éxito, todos los thresholds cumplidos | Reportar resultados |
+| `99` | Thresholds fallidos (datos válidos) | Leer HTML, analizar, NO re-ejecutar |
+| `101` | Error de setup / script con errores | Corregir el script |
+| `107` | Timeout de conexión | Verificar entorno |
 
 ### Post-Compactación (contexto resumido)
 > Aplica cuando ves el mensaje `✻ Conversation compacted` en el chat.
