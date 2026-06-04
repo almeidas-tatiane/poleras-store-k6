@@ -4,61 +4,61 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 <!-- CLAUDE.md — Poleras Store · Performance Testing Course -->
 
-Guía de operación para el agente Claude Code en este proyecto de curso.
+Operation guide for the Claude Code agent in this course project.
 
 ---
 
-## Contexto del Proyecto
+## Project Context
 
-**Aplicación bajo prueba:** Poleras Store — e-commerce de poleras (camisetas)
-**Descripción:** Poleras Store es una tienda online que vende poleras de calidad, cómodas y a bajo precio. Todos los servicios están montados en local para que el equipo de Performance Testing inicie sus actividades. El equipo de ingeniería necesita una evaluación para saber si la plataforma podrá resistir el próximo evento de Black Friday.
-**Stack del sistema:** Node.js + Express + PostgreSQL · 5 microservicios independientes  
-**Observabilidad:** Prometheus · Loki · Tempo · Grafana (disponible durante ejecución de pruebas)
+**Application under test:** Poleras Store — t-shirt e-commerce
+**Description:** Poleras Store is an online store that sells quality, comfortable, affordable t-shirts. All services run locally so the Performance Testing team can begin their activities. The engineering team needs an assessment to determine whether the platform can withstand the upcoming Black Friday event.
+**System stack:** Node.js + Express + PostgreSQL · 5 independent microservices
+**Observability:** Prometheus · Loki · Tempo · Grafana (available during test execution)
 
-### Microservicios y puertos
+### Microservices and ports
 
-| Servicio | Puerto | Función |
+| Service | Port | Function |
 |---|---|---|
-| users-api | `:3001` | Autenticación, registro, JWT |
-| products-service | `:3002` | Catálogo, variantes, stock |
-| cart-service | `:3003` | Carrito de compras, sesión |
-| orders-service | `:3004` | Pedidos, estado, historial |
-| payments-service | `:3005` | Pagos, transacciones |
+| users-api | `:3001` | Authentication, registration, JWT |
+| products-service | `:3002` | Catalog, variants, stock |
+| cart-service | `:3003` | Shopping cart, session |
+| orders-service | `:3004` | Orders, status, history |
+| payments-service | `:3005` | Payments, transactions |
 
-**Diagramas de arquitectura:** `docs/architecture.html` / `docs/architecture.en.html` · `docs/sequence.html` / `docs/sequence.en.html`
+**Architecture diagrams:** `docs/architecture.html` / `docs/architecture.en.html` · `docs/sequence.html` / `docs/sequence.en.html`
 
 ---
 
-## Flujo del Curso (6 Fases)
+## Course Flow (6 Phases)
 
 ```
-FASE 1 — Análisis de Requisitos      → Leer tickets JIRA, definir SLAs
-FASE 2 — Planificación y Estrategia  → Elegir tipos de prueba, modelo de carga
-FASE 3 — Diseño de Scripts           → Crear scripts k6 (patrón de 5 bloques)
-FASE 4 — Configuración del Entorno   → Verificar servicios, preparar datasets
-FASE 5 — Ejecución de Pruebas        → Smoke → Load → Stress → Spike → Soak
-FASE 6 — Análisis y Reporte          → Interpretar resultados, reportar hallazgos
+PHASE 1 — Requirements Analysis     → Read JIRA tickets, define SLAs
+PHASE 2 — Planning and Strategy     → Choose test types, load model
+PHASE 3 — Script Design             → Create k6 scripts (5-block pattern)
+PHASE 4 — Environment Setup         → Verify services, prepare datasets
+PHASE 5 — Test Execution            → Smoke → Load → Stress → Spike → Soak
+PHASE 6 — Analysis and Reporting    → Interpret results, report findings
 ```
 
 ---
 
-## Skills Disponibles
+## Available Skills
 
-Los skills se activan **automáticamente** durante el flujo normal. Si el contexto fue compactado, invócalos explícitamente con `/skill-name`:
+Skills activate **automatically** during the normal flow. If the context was compacted, invoke them explicitly with `/skill-name`:
 
-| Skill | Cuándo se activa | Qué hace |
+| Skill | When it activates | What it does |
 |---|---|---|
-| `/performance-testing-strategy` | Después de leer los tickets JIRA¹ | Diseña la estrategia de pruebas |
-| `/k6-best-practices` | Después de crear un script | Valida estructura y buenas prácticas |
-| `/performance-report-analysis` | Después de ejecutar k6 | Analiza resultados y genera reporte |
+| `/performance-testing-strategy` | After reading JIRA tickets¹ | Designs the test strategy |
+| `/k6-best-practices` | After creating a script | Validates structure and best practices |
+| `/performance-report-analysis` | After running k6 | Analyzes results and generates report |
 
-> ¹ Requiere MCP de Atlassian conectado y tablero JIRA creado. Ver `prompts/jira-setup.es.md` antes de iniciar la Fase 1.
+> ¹ Requires Atlassian MCP connected and JIRA board created. See `prompts/jira-setup.en.md` before starting Phase 1.
 
 ---
 
-## Patrón de 5 Bloques (todos los scripts k6)
+## 5-Block Pattern (all k6 scripts)
 
-Cada script k6 que crees **debe** seguir esta estructura:
+Every k6 script you create **must** follow this structure:
 
 ```javascript
 import http from 'k6/http';
@@ -66,47 +66,47 @@ import { check, sleep } from 'k6';
 import { SharedArray } from 'k6/data';
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
 
-// Block 1 — Options: thresholds y escenario (VUs, duración, ramp-up)
+// Block 1 — Options: thresholds and scenario (VUs, duration, ramp-up)
 export const options = {
   thresholds: {
-    'http_req_duration': ['p(95)<200'],  // SLA del ticket JIRA
+    'http_req_duration': ['p(95)<200'],  // SLA from JIRA ticket
     'http_req_failed': ['rate<0.005']
   }
 };
 
-// Block 2 — Data: dataset de usuarios (SharedArray, nunca variable plana)
+// Block 2 — Data: user dataset (SharedArray, never a plain variable)
 const users = new SharedArray('users', () =>
   JSON.parse(open('../../data/users.json')).users
 );
 
-// Block 3 — Setup: preparación one-time (opcional)
+// Block 3 — Setup: one-time preparation (optional)
 export function setup() { }
 
-// Block 4 — Default: workload por VU
+// Block 4 — Default: workload per VU
 export default function() {
   // requests, checks, sleep
-  sleep(Math.random() * 2 + 1);  // think time obligatorio
+  sleep(Math.random() * 2 + 1);  // mandatory think time
 }
 
-// Block 5 — Summary: genera HTML report
+// Block 5 — Summary: generates HTML report
 export function handleSummary(data) {
   return { 'results/report.html': htmlReport(data) };
 }
 ```
 
-**Reglas clave:**
-- `SharedArray` siempre para datos — nunca variable plana (riesgo OOM)
-- `thresholds` para fallar el test — `check()` solo registra, nunca falla
-- `sleep()` entre pasos — simula comportamiento real del usuario
-- Base URL desde `__ENV.BASE_URL || 'http://localhost:3001'`
+**Key rules:**
+- `SharedArray` always for data — never a plain variable (OOM risk)
+- `thresholds` to fail the test — `check()` only records, never fails
+- `sleep()` between steps — simulates real user behavior
+- Base URL from `__ENV.BASE_URL || 'http://localhost:3001'`
 
 ---
 
-## Dataset y Estructura (el skill lo crea)
+## Dataset and Structure (the skill creates it)
 
-El skill `/k6-best-practices` genera la estructura de archivos, carpetas y datasets. No crees manualmente `lib/`, `data/`, `tests/` ni `results/` — el skill lo hace por ti.
+The `/k6-best-practices` skill generates the file structure, folders, and datasets. Do not manually create `lib/`, `data/`, `tests/`, or `results/` — the skill does it for you.
 
-**Regla de dataset:** el archivo `data/users.json` debe tener **≥ VUs** definidos en el script.
+**Dataset rule:** the `data/users.json` file must have **≥ VUs** defined in the script.
 
 ```json
 {
@@ -119,77 +119,76 @@ El skill `/k6-best-practices` genera la estructura de archivos, carpetas y datas
 
 ---
 
-## Comandos k6 más usados
+## Most Used k6 Commands
 
 ```bash
-# Smoke test rápido (validar que el script funciona)
+# Quick smoke test (validate the script works)
 k6 run --vus 2 --duration 30s tests/auth/auth.test.js
 
-# Ejecución oficial (usa options del script)
+# Official execution (uses script options)
 k6 run tests/auth/auth.test.js
 
-# Con URL diferente al default
+# With a different URL than default
 k6 run --env BASE_URL=http://localhost:3002 tests/products/products.test.js
 
-# Con dashboard web en tiempo real
+# With real-time web dashboard
 K6_WEB_DASHBOARD=true k6 run tests/auth/auth.test.js
 
-# Dashboard + exportar HTML al terminar
+# Dashboard + export HTML when done
 K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=results/dashboard.html k6 run tests/auth/auth.test.js
 
-# Salida JSON para análisis posterior
+# JSON output for later analysis
 k6 run --out json=results/raw.json tests/auth/auth.test.js
 ```
 
 ---
 
-## Reglas Críticas
+## Critical Rules
 
-### Ejecución de pruebas
-1. **Si error rate > 50% en los primeros 90s → PARAR.** No re-ejecutar sin diagnosticar primero.
-2. **Antes de ejecutar:** verificar que el servicio responde → `curl http://localhost:3001/health`
-   - Si el servicio no responde → revisar Docker: `docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"`
-3. **Los SLAs vienen del ticket JIRA** — no se inventan en el script.
-4. **Resultado siempre en `results/`** — el script genera HTML automáticamente (Block 5).
-   - Convención de carpeta: `results/YYYY-MM-DD_<tipo-prueba>_<servicio>/` (ej: `2026-06-01_smoke_auth/`)
-5. **Exit codes de k6:**
+### Test execution
+1. **If error rate > 50% in the first 90s → STOP.** Do not re-run without diagnosing first.
+2. **Before running:** verify the service responds → `curl http://localhost:3001/health`
+   - If the service doesn't respond → check Docker: `docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"`
+3. **SLAs come from the JIRA ticket** — never invent them in the script.
+4. **Results always in `results/`** — the script generates HTML automatically (Block 5).
+   - Folder convention: `results/YYYY-MM-DD_<test-type>_<service>/` (e.g. `2026-06-01_smoke_auth/`)
+5. **k6 exit codes:**
 
-| Código | Significado | Qué hacer |
+| Code | Meaning | What to do |
 |---|---|---|
-| `0` | Éxito, todos los thresholds cumplidos | Reportar resultados |
-| `99` | Thresholds fallidos (datos válidos) | Leer HTML, analizar, NO re-ejecutar |
-| `101` | Error de setup / script con errores | Corregir el script |
-| `107` | Timeout de conexión | Verificar entorno |
+| `0` | Success, all thresholds met | Report results |
+| `99` | Failed thresholds (data is valid) | Read HTML, analyze, do NOT re-run |
+| `101` | Setup error / script errors | Fix the script |
+| `107` | Connection timeout | Check environment |
 
-### Post-Compactación (contexto resumido)
-> Aplica cuando ves el mensaje `✻ Conversation compacted` en el chat.
+### Post-Compaction (summarized context)
+> Applies when you see the `✻ Conversation compacted` message in the chat.
 
-- ❌ **NO** activar skills automáticamente — el contexto resumido puede producir análisis incorrectos.
-- ✅ **SÍ** invocarlos explícitamente cuando los necesites: `/k6-best-practices`, `/performance-testing-strategy`, `/performance-report-analysis`.
-- ✅ **SÍ** re-leer los tickets JIRA via MCP antes de continuar (datos frescos, no memoria).
-- ✅ **SÍ** verificar el estado real de los archivos con Read antes de asumir qué existe.
+- ❌ **DO NOT** activate skills automatically — summarized context can produce incorrect analysis.
+- ✅ **DO** invoke them explicitly when needed: `/k6-best-practices`, `/performance-testing-strategy`, `/performance-report-analysis`.
+- ✅ **DO** re-read JIRA tickets via MCP before continuing (fresh data, not memory).
+- ✅ **DO** verify the actual state of files with Read before assuming what exists.
 
-### Al leer tickets JIRA
-- Extraer SLAs explícitos (P95, error rate, VUs) antes de crear cualquier script.
-- Si el ticket no tiene SLAs definidos → preguntar al instructor antes de continuar.
-- Nunca asumir thresholds — siempre desde el ticket.
+### When reading JIRA tickets
+- Extract explicit SLAs (P95, error rate, VUs) before creating any script.
+- If the ticket has no defined SLAs → ask the instructor before continuing.
+- Never assume thresholds — always take them from the ticket.
 
-<!-- REGLAS ADICIONALES — agregar aquí según avance el curso -->
+<!-- ADDITIONAL RULES — add here as the course progresses -->
 
 ---
 
-## Documentación del Proyecto
+## Project Documentation
 
-Toda la documentación está disponible en **español** (`.es.md`) e **inglés** (`.en.md`):
+All documentation is available in **Spanish** (`.es.md`) and **English** (`.en.md`):
 
-| Documento ES | Documento EN | Contenido |
+| ES Document | EN Document | Content |
 |---|---|---|
-| `docs/architecture.html` | `docs/architecture.en.html` | Diagrama interactivo de los 5 microservicios |
-| `docs/sequence.html` | `docs/sequence.en.html` | Flujo de compra completo (secuencia de llamadas) |
-| `docs/pattern-5-blocks.es.md` | `docs/pattern-5-blocks.en.md` | Patrón obligatorio para scripts k6 |
-| `docs/bimodal-reporting.es.md` | `docs/bimodal-reporting.en.md` | Reportes técnicos y ejecutivos |
-| `docs/protocols.es.md` | `docs/protocols.en.md` | Comandos k6, errores comunes, convenciones |
-| `prompts/jira-setup.es.md` | `prompts/jira-setup.en.md` | Prompt para poblar JIRA con el MCP |
+| `docs/architecture.html` | `docs/architecture.en.html` | Interactive diagram of the 5 microservices |
+| `docs/sequence.html` | `docs/sequence.en.html` | Complete purchase flow (call sequence) |
+| `docs/pattern-5-blocks.es.md` | `docs/pattern-5-blocks.en.md` | Mandatory pattern for k6 scripts |
+| `docs/bimodal-reporting.es.md` | `docs/bimodal-reporting.en.md` | Technical and executive reports |
+| `docs/protocols.es.md` | `docs/protocols.en.md` | k6 commands, common errors, conventions |
+| `prompts/jira-setup.es.md` | `prompts/jira-setup.en.md` | Prompt to populate JIRA with MCP |
 
 ---
-
