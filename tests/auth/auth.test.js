@@ -52,7 +52,7 @@ export default function () {
 
   check(res, {
     'login: status 200': (r) => r.status === 200,
-    'login: has token':  (r) => r.json('token') !== undefined,
+    'login: has token':  (r) => r.json('data.token') !== undefined,
   });
 
   sleep(Math.random() * 2 + 1); // think time: 1–3s
