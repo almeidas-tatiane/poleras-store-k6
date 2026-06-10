@@ -16,9 +16,9 @@ import { textSummary }  from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 export const options = {
   stages: [
-    { duration: '2m', target: 10  }, // ramp-up
-    { duration: '5m', target: 50  }, // Black Friday peak
-    { duration: '1m', target: 0   }, // ramp-down
+    { duration: '5m',  target: 50 }, // ramp-up — 5 min per PT-27
+    { duration: '30m', target: 50 }, // sustain — 30 min steady state per PT-27
+    { duration: '5m',  target: 0  }, // ramp-down
   ],
   thresholds: {
     // Scoped to cart-service only — login (users-api) excluded via tag
