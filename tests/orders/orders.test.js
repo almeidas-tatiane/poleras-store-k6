@@ -23,10 +23,8 @@ export const options = {
   thresholds: {
     // Scoped to orders-service only — auth (users-api) and cart calls excluded via tag
     'http_req_duration{service:orders}': ['p(95)<200'],
-    'http_req_failed': [
-      'rate<0.01',                                     // PT-7: max 1% errors
-      { threshold: 'rate<0.20', abortOnFail: true },   // PT-26: abort mid-test on pool exhaustion (>20%)
-    ],
+    'http_req_failed{service:orders}':   ['rate<0.01'],                              // PT-7: max 1% errors (scoped)
+    'http_req_failed':                   [{ threshold: 'rate<0.20', abortOnFail: true }], // PT-26: global abort guard
   },
 };
 

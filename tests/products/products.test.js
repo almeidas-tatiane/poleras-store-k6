@@ -21,11 +21,9 @@ export const options = {
     { duration: '5m',  target: 0   }, // ramp-down
   ],
   thresholds: {
-    'http_req_duration': ['p(95)<100'],  // PT-7: strictest SLA (catalog most-read)
-    'http_req_failed': [
-      'rate<0.005',                                    // PT-7: max 0.5% errors
-      { threshold: 'rate<0.20', abortOnFail: true },   // PT-26: abort mid-test on pool exhaustion (>20%)
-    ],
+    'http_req_duration{service:products}': ['p(95)<100'],                                // PT-7: strictest SLA (catalog most-read)
+    'http_req_failed{service:products}':   ['rate<0.005'],                               // PT-7: max 0.5% errors (scoped)
+    'http_req_failed':                     [{ threshold: 'rate<0.20', abortOnFail: true }], // PT-26: global abort guard
   },
 };
 

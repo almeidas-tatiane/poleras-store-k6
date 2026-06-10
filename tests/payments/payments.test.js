@@ -25,10 +25,8 @@ export const options = {
     // Scoped to payments-service only — auth/cart/orders prep calls excluded via tag
     'http_req_duration{service:payments}': ['p(95)<300'],
     // 0.1% — strictest SLA; HTTP 402 (payment rejection) excluded via responseCallback
-    'http_req_failed': [
-      'rate<0.001',                                    // PT-7: max 0.1% errors
-      { threshold: 'rate<0.20', abortOnFail: true },   // PT-26: abort mid-test on pool exhaustion (>20%)
-    ],
+    'http_req_failed{service:payments}':   ['rate<0.001'],                           // PT-7: max 0.1% errors (scoped)
+    'http_req_failed':                     [{ threshold: 'rate<0.20', abortOnFail: true }], // PT-26: global abort guard
   },
 };
 

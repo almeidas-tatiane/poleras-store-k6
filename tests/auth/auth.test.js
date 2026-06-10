@@ -19,11 +19,9 @@ export const options = {
     { duration: '5m',  target: 0   }, // ramp-down
   ],
   thresholds: {
-    'http_req_duration': ['p(95)<200'], // PT-7: SLA auth
-    'http_req_failed': [
-      'rate<0.005',                                    // PT-7: max 0.5% errors
-      { threshold: 'rate<0.20', abortOnFail: true },   // PT-26: abort mid-test on pool exhaustion (>20%)
-    ],
+    'http_req_duration{service:auth}': ['p(95)<200'],                                // PT-7: scoped to users-api
+    'http_req_failed{service:auth}':   ['rate<0.005'],                               // PT-7: max 0.5% errors (scoped)
+    'http_req_failed':                 [{ threshold: 'rate<0.20', abortOnFail: true }], // PT-26: global abort guard
   },
 };
 
