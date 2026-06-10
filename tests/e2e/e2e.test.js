@@ -10,6 +10,9 @@ import { htmlReport }            from 'https://raw.githubusercontent.com/benc-uk
 import { textSummary }           from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 // ─── Block 1 — Options ───────────────────────────────────────────────────────
+// Default: Load Test (Black Friday peak). Override for smoke/stress/spike via CLI:
+//   k6 run --vus 2 --duration 30s --env TEST_TYPE=smoke tests/e2e/e2e.test.js
+
 export const options = {
   stages: [
     { duration: '2m', target: 10 }, // ramp-up
