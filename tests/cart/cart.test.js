@@ -9,6 +9,7 @@ import { check, sleep } from 'k6';
 import { SharedArray }  from 'k6/data';
 import { htmlReport }   from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
 import { textSummary }  from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { getAuthToken } from '../../lib/auth.js';
 
 // ─── Block 1 — Options ───────────────────────────────────────────────────────
 // Default: Load Test (Black Friday peak). Override for smoke/stress/spike via CLI:
@@ -49,23 +50,8 @@ export default function () {
   const variantId = ((__VU - 1) % 10) + 1; // rotate through variants 1–10
 
   // Step 1: login to get JWT
-  const loginRes = http.post(
-    `${BASE_URL_AUTH}/api/auth/login`,
-    JSON.stringify({ email: user.email, password: user.password }),
-    {
-      headers: { 'Content-Type': 'application/json' },
-      tags:    { service: 'auth' },
-    }
-  );
-
-  const loginOk = check(loginRes, {
-    'login: status 200': (r) => r.status === 200,
-    'login: has token':  (r) => r.json('data.token') !== undefined,
-  });
-
-  if (!loginOk) return;
-
-  const token = loginRes.json('data.token');
+  const token = getAuthToken(BASE_URL_AUTH, user.email, user.password);
+  if (!token) return;
   const authHeaders = {
     'Content-Type':  'application/json',
     'Authorization': `Bearer ${token}`,

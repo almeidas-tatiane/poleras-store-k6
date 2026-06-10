@@ -8,6 +8,7 @@ import { check, sleep, group }   from 'k6';
 import { SharedArray }           from 'k6/data';
 import { htmlReport }            from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
 import { textSummary }           from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { getAuthToken }          from '../../lib/auth.js';
 
 // ─── Block 1 — Options ───────────────────────────────────────────────────────
 // Default: Load Test (Black Friday peak). Override for smoke/stress/spike via CLI:
@@ -69,17 +70,8 @@ export default function () {
 
   // ── Step 1: Authentication ───────────────────────────────────────────────
   group('1 - auth', function () {
-    const loginRes = http.post(
-      `${BASE_URL_AUTH}/api/auth/login`,
-      JSON.stringify({ email: user.email, password: user.password }),
-      { headers: { 'Content-Type': 'application/json' }, tags: { service: 'auth' } }
-    );
-    const ok = check(loginRes, {
-      'login: status 200': (r) => r.status === 200,
-      'login: has token':  (r) => r.json('data.token') !== undefined,
-    });
-    if (ok) {
-      token = loginRes.json('data.token');
+    token = getAuthToken(BASE_URL_AUTH, user.email, user.password);
+    if (token) {
       authHeaders = {
         'Content-Type':  'application/json',
         'Authorization': `Bearer ${token}`,
