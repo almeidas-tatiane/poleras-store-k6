@@ -18,7 +18,10 @@ export const options = {
   ],
   thresholds: {
     'http_req_duration': ['p(95)<1000'], // PT-7: e2e SLA — all requests across all 5 services
-    'http_req_failed':   ['rate<0.01'],  // PT-7: 1% max error rate
+    'http_req_failed': [
+      'rate<0.01',                                     // PT-7: 1% max error rate
+      { threshold: 'rate<0.20', abortOnFail: true },   // PT-26: abort mid-test on pool exhaustion (>20%)
+    ],
   },
 };
 
