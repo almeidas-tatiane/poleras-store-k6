@@ -115,7 +115,7 @@ export default function () {
     for (const item of existingItems) {
       http.del(`${BASE_URL_CART}/api/cart/items/${item.id}`, null, {
         headers: authHeaders,
-        tags:    { service: 'cart', endpoint: 'delete' },
+        tags:    { service: 'cart', endpoint: 'delete', name: 'DELETE /api/cart/items/:id' },
       });
     }
     sleep(Math.random() * 0.5 + 0.5);
@@ -177,7 +177,7 @@ export default function () {
       const paymentId = paymentRes.json('data.payment_id');
       const statusRes = http.get(
         `${BASE_URL_PAYMENTS}/api/payments/${paymentId}`,
-        { headers: authHeaders, tags: { service: 'payments', endpoint: 'status' } }
+        { headers: authHeaders, tags: { service: 'payments', endpoint: 'status', name: 'GET /api/payments/:id' } }
       );
       check(statusRes, {
         'payment status: 200':              (r) => r.status === 200,
@@ -190,7 +190,8 @@ export default function () {
 
 // ─── Block 5 — Summary (HTML report) ─────────────────────────────────────────
 export function handleSummary(data) {
-  const date     = new Date().toISOString().split('T')[0];
+  const now      = new Date();
+  const date     = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
   const testType = __ENV.TEST_TYPE || 'load';
   const dir      = `results/${date}_${testType}_e2e`;
   return {

@@ -72,7 +72,7 @@ export default function () {
   for (const item of existingItems) {
     http.del(`${BASE_URL_CART}/api/cart/items/${item.id}`, null, {
       headers: authHeaders,
-      tags:    { service: 'cart' },
+      tags:    { service: 'cart', name: 'DELETE /api/cart/items/:id' },
     });
   }
 
@@ -130,7 +130,7 @@ export default function () {
       `${BASE_URL}/api/payments/${paymentId}`,
       {
         headers: authHeaders,
-        tags:    { service: 'payments', endpoint: 'status' },
+        tags:    { service: 'payments', endpoint: 'status', name: 'GET /api/payments/:id' },
       }
     );
     check(statusRes, {
@@ -144,7 +144,8 @@ export default function () {
 
 // ─── Block 5 — Summary (HTML report) ─────────────────────────────────────────
 export function handleSummary(data) {
-  const date     = new Date().toISOString().split('T')[0];
+  const now      = new Date();
+  const date     = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
   const testType = __ENV.TEST_TYPE || 'load';
   const dir      = `results/${date}_${testType}_payments`;
   return {

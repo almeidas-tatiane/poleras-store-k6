@@ -78,7 +78,8 @@ export default function () {
 
 // ─── Block 5 — Summary (HTML report) ─────────────────────────────────────────
 export function handleSummary(data) {
-  const date     = new Date().toISOString().split('T')[0];
+  const now      = new Date();
+  const date     = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
   const testType = __ENV.TEST_TYPE || 'load';
   const dir      = `results/${date}_${testType}_products`;
 
