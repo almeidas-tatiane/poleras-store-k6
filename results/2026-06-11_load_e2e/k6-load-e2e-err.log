@@ -1,0 +1,2 @@
+time="2026-06-11T16:52:21-03:00" level=warning msg="SSLKEYLOGFILE was specified, logging TLS connection keys to '\\\\.\\nllMonFltProxy\\FFFFE68C37EB2A60'..." test_path="file:///C:/GitHub/poleras-store-k6/tests/e2e/e2e.test.js"
+time="2026-06-11T17:02:31-03:00" level=info msg="[k6-reporter v3.0.4] Generating HTML summary report, with theme: default" source=console
