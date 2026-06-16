@@ -81,7 +81,7 @@ export function handleSummary(data) {
   const now      = new Date();
   const date     = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
   const testType = __ENV.TEST_TYPE || 'load';
-  const dir      = `results/${date}_${testType}_products`;
+  const dir      = __ENV.RESULT_DIR || `results/${date}_${testType}_products`;
 
   return {
     [`${dir}/products-report.html`]: htmlReport(data),
