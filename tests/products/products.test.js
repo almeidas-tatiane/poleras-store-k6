@@ -16,9 +16,13 @@ import { textSummary }  from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 export const options = {
   stages: [
-    { duration: '5m',  target: 200 }, // ramp-up — 5 min per PT-27
-    { duration: '30m', target: 200 }, // sustain — 30 min steady state per PT-27
-    { duration: '5m',  target: 0   }, // ramp-down
+    { duration: '2m', target: 100  }, // Stage 1 — PT-16 stress ramp
+    { duration: '2m', target: 200  }, // Stage 2
+    { duration: '2m', target: 400  }, // Stage 3
+    { duration: '2m', target: 800  }, // Stage 4
+    { duration: '2m', target: 1200 }, // Stage 5
+    { duration: '2m', target: 2000 }, // Stage 6 — peak
+    { duration: '2m', target: 0    }, // Stage 7 — ramp-down / recovery
   ],
   thresholds: {
     'http_req_duration{service:products}': ['p(95)<100'],                                // PT-7: strictest SLA (catalog most-read)
