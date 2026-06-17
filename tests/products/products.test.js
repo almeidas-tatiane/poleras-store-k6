@@ -10,20 +10,28 @@ import { htmlReport }   from 'https://raw.githubusercontent.com/benc-uk/k6-repor
 import { textSummary }  from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 // ─── Block 1 — Options ───────────────────────────────────────────────────────
-// Default: Load Test (Black Friday peak — highest VU count in the project).
-// Override for smoke/stress/spike via CLI:
-//   k6 run --vus 2 --duration 30s --env TEST_TYPE=smoke tests/products/products.test.js
+// Modes (set via --env TEST_TYPE=<mode>):
+//   stress (default) : 100→2,000 VUs — PT-16 breaking-point search
+//   bf-validation    : ramp to 2,500 VUs + 5 min steady-state — P1 from Run 5 report (BF readiness Go/No-Go)
+
+const _stressStages = [
+  { duration: '2m', target: 100  }, // Stage 1 — PT-16 stress ramp
+  { duration: '2m', target: 200  }, // Stage 2
+  { duration: '2m', target: 400  }, // Stage 3
+  { duration: '2m', target: 800  }, // Stage 4
+  { duration: '2m', target: 1200 }, // Stage 5
+  { duration: '2m', target: 2000 }, // Stage 6 — peak
+  { duration: '2m', target: 0    }, // Stage 7 — ramp-down / recovery
+];
+
+const _bfValidationStages = [
+  { duration: '3m', target: 2500 }, // ramp to Black Friday peak target
+  { duration: '5m', target: 2500 }, // steady-state — BF readiness certification
+  { duration: '2m', target: 0    }, // ramp-down
+];
 
 export const options = {
-  stages: [
-    { duration: '2m', target: 100  }, // Stage 1 — PT-16 stress ramp
-    { duration: '2m', target: 200  }, // Stage 2
-    { duration: '2m', target: 400  }, // Stage 3
-    { duration: '2m', target: 800  }, // Stage 4
-    { duration: '2m', target: 1200 }, // Stage 5
-    { duration: '2m', target: 2000 }, // Stage 6 — peak
-    { duration: '2m', target: 0    }, // Stage 7 — ramp-down / recovery
-  ],
+  stages: __ENV.TEST_TYPE === 'bf-validation' ? _bfValidationStages : _stressStages,
   thresholds: {
     'http_req_duration{service:products}': ['p(95)<100'],                                // PT-7: strictest SLA (catalog most-read)
     'http_req_failed{service:products}':   ['rate<0.005'],                               // PT-7: max 0.5% errors (scoped)
