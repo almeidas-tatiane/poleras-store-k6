@@ -11,15 +11,28 @@ import { textSummary }           from 'https://jslib.k6.io/k6-summary/0.0.1/inde
 import { getAuthToken }          from '../../lib/auth.js';
 
 // ─── Block 1 — Options ───────────────────────────────────────────────────────
-// Default: Load Test (Black Friday peak). Override for smoke/stress/spike via CLI:
-//   k6 run --vus 2 --duration 30s --env TEST_TYPE=smoke tests/e2e/e2e.test.js
+// Modes (set via --env TEST_TYPE=<mode>):
+//   load   (default) : 30 VUs × 30 min — PT-27 Black Friday steady-state
+//   stress           : 100→2,000 VUs   — PT-16 breaking-point search (full chain)
+
+const _loadStages = [
+  { duration: '5m',  target: 30 }, // ramp-up — 5 min per PT-27
+  { duration: '30m', target: 30 }, // sustain — 30 min steady state per PT-27
+  { duration: '5m',  target: 0  }, // ramp-down
+];
+
+const _stressStages = [
+  { duration: '2m', target: 100  }, // Stage 1 — PT-16 stress ramp
+  { duration: '2m', target: 200  }, // Stage 2
+  { duration: '2m', target: 400  }, // Stage 3
+  { duration: '2m', target: 800  }, // Stage 4
+  { duration: '2m', target: 1200 }, // Stage 5
+  { duration: '2m', target: 2000 }, // Stage 6 — peak
+  { duration: '2m', target: 0    }, // Stage 7 — ramp-down / recovery
+];
 
 export const options = {
-  stages: [
-    { duration: '5m',  target: 30 }, // ramp-up — 5 min per PT-27
-    { duration: '30m', target: 30 }, // sustain — 30 min steady state per PT-27
-    { duration: '5m',  target: 0  }, // ramp-down
-  ],
+  stages: __ENV.TEST_TYPE === 'stress' ? _stressStages : _loadStages,
   thresholds: {
     'http_req_duration': ['p(95)<1000'], // PT-7: e2e SLA — all requests across all 5 services
     'http_req_failed': [
@@ -193,7 +206,7 @@ export function handleSummary(data) {
   const now      = new Date();
   const date     = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
   const testType = __ENV.TEST_TYPE || 'load';
-  const dir      = `results/${date}_${testType}_e2e`;
+  const dir      = __ENV.RESULT_DIR || `results/${date}_${testType}_e2e`;
   return {
     [`${dir}/e2e-report.html`]: htmlReport(data),
     stdout: textSummary(data, { indent: ' ', enableColors: true }),
